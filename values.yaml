@@ -16,7 +16,7 @@ fullnameOverride: "citadel"
 
 # -- Citadel application config
 citadel:
-  environment: production
+  environment: development
   logLevel: INFO
   secretKey: ""
   apiKeyPrefix: "sk-citadel"
