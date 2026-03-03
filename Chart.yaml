@@ -1,0 +1,20 @@
+apiVersion: v2
+name: citadel
+description: Helm chart for Citadel AI Gateway. Big Bang ready.
+type: application
+
+# Chart version — increment on each release
+version: 0.1.0
+
+# Application version deployed by this chart
+appVersion: "0.1.0"
+
+dependencies:
+  - name: postgresql
+    version: "16.4.1"
+    repository: oci://registry-1.docker.io/bitnamicharts
+    condition: postgresql.enabled
+  - name: redis
+    version: "20.6.2"
+    repository: oci://registry-1.docker.io/bitnamicharts
+    condition: redis.enabled

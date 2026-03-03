@@ -1,0 +1,26 @@
+{{- if and .Values.istio .Values.istio.enabled }}
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: citadel
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "citadel.labels" . | nindent 4 }}
+    app.kubernetes.io/part-of: citadel
+    app.kubernetes.io/component: citadel
+spec:
+  gateways:
+  {{- range .Values.istio.citadel.gateways }}
+    - {{ . }}
+  {{- end }}
+  hosts:
+  {{- range .Values.istio.citadel.hosts }}
+    - {{ tpl . $ }}
+  {{- end }}
+  http:
+    - route:
+        - destination:
+            port:
+              number: {{ .Values.service.port }}
+            host: {{ include "citadel.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+{{- end }}

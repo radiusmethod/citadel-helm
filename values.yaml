@@ -1,0 +1,148 @@
+# Default values for Citadel AI Gateway.
+# This is a YAML-formatted file.
+
+domain: "bigbang.dev"
+
+replicaCount: 1
+
+image:
+  repository: ghcr.io/radiusmethod/citadel
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
+nameOverride: ""
+fullnameOverride: "citadel"
+
+# -- Citadel application config
+citadel:
+  environment: production
+  logLevel: INFO
+  secretKey: ""
+  apiKeyPrefix: "sk-citadel"
+  autoProvisionUsers: true
+  devLoginEnabled: true
+  guardrails:
+    enabled: true
+    openaiModeration: false
+    piiFilter: false
+  passthrough:
+    enabled: false
+  plugins:
+    enabled: true
+  # OIDC / Okta (optional)
+  okta:
+    enabled: false
+    domain: ""
+    clientId: ""
+    clientSecret: ""
+    sessionSecret: ""
+    sessionExpiryHours: 24
+    baseUrl: ""
+
+# -- LLM Provider API keys
+providers:
+  openrouter:
+    apiKey: ""
+  anthropic:
+    apiKey: ""
+  vertexai:
+    projectId: ""
+    location: "us-central1"
+    credentialsJson: ""
+  bedrock:
+    enabled: false
+    region: "us-east-1"
+    accessKeyId: ""
+    secretAccessKey: ""
+    useTaskRole: false
+
+# -- Bring your own Kubernetes Secret (skips creating the built-in secret)
+existingSecret: ""
+
+# -- Bundled PostgreSQL (Bitnami subchart)
+postgresql:
+  enabled: true
+  auth:
+    database: citadel
+    username: citadel
+    password: ""
+  primary:
+    persistence:
+      size: 8Gi
+
+# -- External database (when postgresql.enabled=false)
+externalDatabase:
+  url: ""
+
+# -- Bundled Redis (Bitnami subchart, optional)
+redis:
+  enabled: false
+
+# -- External Redis (when redis.enabled=false)
+externalRedis:
+  url: ""
+
+# -- Istio / Big Bang integration
+istio:
+  enabled: false
+  citadel:
+    gateways:
+      - "istio-system/public"
+    hosts:
+      - "citadel.{{ .Values.domain }}"
+  mtls:
+    mode: STRICT
+
+# -- Standard Kubernetes Ingress (non-Big Bang)
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts:
+    - host: citadel.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+
+service:
+  type: ClusterIP
+  port: 8000
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+podSecurityContext: {}
+
+securityContext:
+  capabilities:
+    drop:
+      - ALL
+  readOnlyRootFilesystem: false
+  runAsNonRoot: true
+  runAsUser: 1000
+  runAsGroup: 1000
+
+resources:
+  requests:
+    cpu: 250m
+    memory: 512Mi
+  limits:
+    cpu: "1"
+    memory: 1Gi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 70
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
+podLabels: {}
+podAnnotations: {}
+imagePullSecrets: []
