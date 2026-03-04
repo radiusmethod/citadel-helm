@@ -7,9 +7,7 @@ Works as a standalone Kubernetes install **and** as a Big Bang package.
 ## Quick Start
 
 ```bash
-helm repo add bitnami https://charts.bitnami.com/bitnami
-
-helm install citadel . \
+helm install citadel oci://ghcr.io/radiusmethod/citadel-helm/citadel-chart \
   --set citadel.secretKey="$(openssl rand -hex 32)" \
   --set citadel.environment=development \
   --set citadel.devLoginEnabled=true \
@@ -45,7 +43,7 @@ Click **Dev Login** to get started immediately — no OIDC setup required.
 For trying out Citadel before production deployment. Enables the dev login UI so you can create users and API keys without configuring OIDC.
 
 ```bash
-helm install citadel oci://ghcr.io/radiusmethod/citadel-helm/citadel \
+helm install citadel oci://ghcr.io/radiusmethod/citadel-helm/citadel-chart \
   --set citadel.secretKey="change-me" \
   --set citadel.environment=development \
   --set citadel.devLoginEnabled=true \
@@ -57,7 +55,7 @@ This deploys Citadel with the bundled PostgreSQL, development mode, and dev logi
 ### Production (external database)
 
 ```bash
-helm install citadel oci://ghcr.io/radiusmethod/citadel-helm/citadel \
+helm install citadel oci://ghcr.io/radiusmethod/citadel-helm/citadel-chart \
   --set citadel.secretKey="$(openssl rand -hex 32)" \
   --set citadel.okta.enabled=true \
   --set citadel.okta.domain="company.okta.com" \
@@ -96,7 +94,7 @@ addons:
 If you manage secrets externally (Vault, Sealed Secrets, ESO), create a Kubernetes Secret with the expected keys and reference it:
 
 ```bash
-helm install citadel oci://ghcr.io/radiusmethod/citadel-helm/citadel \
+helm install citadel oci://ghcr.io/radiusmethod/citadel-helm/citadel-chart \
   --set existingSecret=my-citadel-secrets
 ```
 
@@ -106,7 +104,7 @@ Required keys in your secret: `DATABASE_URL`, `SECRET_KEY`. Optional: `OPENROUTE
 
 | Parameter | Description | Default |
 |-----------|-------------|---------|
-| `image.repository` | Container image | `ghcr.io/radiusmethod/citadel-helm/citadel` |
+| `image.repository` | Container image | `ghcr.io/radiusmethod/citadel` |
 | `image.tag` | Image tag (defaults to appVersion) | `""` |
 | `citadel.secretKey` | Session signing key (**required**) | `""` |
 | `citadel.environment` | `development`, `staging`, or `production` | `production` |

@@ -1,5 +1,5 @@
 apiVersion: v2
-name: citadel
+name: citadel-chart
 description: Helm chart for Citadel AI Gateway. Big Bang ready.
 type: application
 

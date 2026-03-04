@@ -6,7 +6,7 @@ domain: "bigbang.dev"
 replicaCount: 1
 
 image:
-  repository: ghcr.io/radiusmethod/citadel-helm/citadel
+  repository: ghcr.io/radiusmethod/citadel
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""

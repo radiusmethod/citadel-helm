@@ -31,8 +31,11 @@ jobs:
           sed -i "s/^version:.*/version: ${{ steps.version.outputs.version }}/" Chart.yaml
           sed -i "s/^appVersion:.*/appVersion: \"${{ steps.version.outputs.version }}\"/" Chart.yaml
 
+      - name: Build chart dependencies
+        run: helm dependency build .
+
       - name: Package chart
         run: helm package .
 
       - name: Push chart to GHCR
-        run: helm push citadel-${{ steps.version.outputs.version }}.tgz oci://ghcr.io/radiusmethod/citadel-helm
+        run: helm push citadel-chart-${{ steps.version.outputs.version }}.tgz oci://ghcr.io/radiusmethod/citadel-helm

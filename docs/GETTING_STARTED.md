@@ -21,7 +21,7 @@ helm repo add bitnami https://charts.bitnami.com/bitnami
 Evaluation mode enables dev login so you can explore the UI, create users, and generate API keys without configuring OIDC.
 
 ```bash
-helm install citadel oci://ghcr.io/radiusmethod/citadel-helm/citadel \
+helm install citadel oci://ghcr.io/radiusmethod/citadel-helm/citadel-chart \
   --set citadel.secretKey="$(openssl rand -hex 32)" \
   --set citadel.environment=development \
   --set citadel.devLoginEnabled=true \
@@ -346,7 +346,7 @@ The container image may not be accessible:
 kubectl describe pod -l app.kubernetes.io/name=citadel
 ```
 
-- Verify image exists: `docker pull ghcr.io/radiusmethod/citadel-helm/citadel:0.1.0`
+- Verify image exists: `docker pull ghcr.io/radiusmethod/citadel:0.1.0`
 - For private registries, set `imagePullSecrets`
 
 ### Database connection failures

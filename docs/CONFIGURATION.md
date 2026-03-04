@@ -7,7 +7,7 @@ Complete reference for all `values.yaml` parameters in the Citadel Helm chart.
 | Parameter | Description | Default | Env Var |
 |-----------|-------------|---------|---------|
 | `replicaCount` | Number of Citadel pod replicas | `1` | — |
-| `image.repository` | Container image repository | `ghcr.io/radiusmethod/citadel-helm/citadel` | — |
+| `image.repository` | Container image repository | `ghcr.io/radiusmethod/citadel` | — |
 | `image.pullPolicy` | Image pull policy | `IfNotPresent` | — |
 | `image.tag` | Image tag (defaults to chart `appVersion`) | `""` | — |
 | `nameOverride` | Override the chart name | `""` | — |
