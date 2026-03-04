@@ -9,7 +9,7 @@ Works as a standalone Kubernetes install **and** as a Big Bang package.
 ```bash
 helm repo add bitnami https://charts.bitnami.com/bitnami
 
-helm install citadel oci://ghcr.io/radiusmethod/citadel-helm/citadel \
+helm install citadel . \
   --set citadel.secretKey="$(openssl rand -hex 32)" \
   --set citadel.environment=development \
   --set citadel.devLoginEnabled=true \
