@@ -6,7 +6,7 @@ domain: "bigbang.dev"
 replicaCount: 1
 
 image:
-  repository: ghcr.io/radiusmethod/citadel
+  repository: ghcr.io/radiusmethod/citadel-helm/citadel
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
@@ -16,12 +16,12 @@ fullnameOverride: "citadel"
 
 # -- Citadel application config
 citadel:
-  environment: development
+  environment: production
   logLevel: INFO
   secretKey: ""
   apiKeyPrefix: "sk-citadel"
   autoProvisionUsers: true
-  devLoginEnabled: true
+  devLoginEnabled: false
   guardrails:
     enabled: true
     openaiModeration: false
@@ -40,10 +40,30 @@ citadel:
     sessionExpiryHours: 24
     baseUrl: ""
 
+# -- Rate limiting defaults
+rateLimiting:
+  defaultRpm: 60
+  defaultTpm: 100000
+
+# -- Request/response body logging (increases storage usage)
+logging:
+  requestBody: false
+  responseBody: false
+
+# -- SocketZero JWT authentication (keyless)
+socketzero:
+  enabled: false
+  jwtPublicKey: ""
+  jwtHeader: "X-SocketZero-Jwt-Assertion"
+  jwtAudience: "citadel"
+  jwtIssuer: "socketzero"
+
 # -- LLM Provider API keys
 providers:
   openrouter:
     apiKey: ""
+    siteUrl: ""
+    appName: ""
   anthropic:
     apiKey: ""
   vertexai:
@@ -66,7 +86,8 @@ postgresql:
   auth:
     database: citadel
     username: citadel
-    password: ""
+    # -- Change this in production
+    password: "citadel"
   primary:
     persistence:
       size: 8Gi
@@ -139,6 +160,46 @@ autoscaling:
   minReplicas: 1
   maxReplicas: 3
   targetCPUUtilizationPercentage: 70
+
+# -- PodDisruptionBudget
+podDisruptionBudget:
+  enabled: false
+  minAvailable: 1
+  # maxUnavailable: 1
+
+# -- NetworkPolicy
+networkPolicy:
+  enabled: false
+  # -- Additional egress rules (e.g., to allow specific LLM API endpoints)
+  additionalEgressRules: []
+
+# -- Extra environment variables to inject into the Citadel container
+extraEnv: []
+# - name: MY_CUSTOM_VAR
+#   value: "my-value"
+
+# -- Extra volumes to add to the pod
+extraVolumes: []
+# - name: my-config
+#   configMap:
+#     name: my-config
+
+# -- Extra volume mounts for the Citadel container
+extraVolumeMounts: []
+# - name: my-config
+#   mountPath: /app/custom-config
+
+# -- Models configuration override. When set, replaces the default models.yaml.
+# See the default configmap.yaml for the expected format.
+# modelsConfig: |
+#   settings:
+#     model_curation_enabled: true
+#     fallback_to_dynamic: false
+#   model_list:
+#     - model_name: my-model
+#       provider: openrouter
+#       provider_params:
+#         model: anthropic/claude-sonnet-4.5
 
 nodeSelector: {}
 tolerations: []

@@ -6,6 +6,9 @@ metadata:
     {{- include "citadel.labels" . | nindent 4 }}
 data:
   models.yaml: |
+{{- if .Values.modelsConfig }}
+{{ .Values.modelsConfig | indent 4 }}
+{{- else }}
     # Citadel Model Configuration
     #
     # Compliance Labels:
@@ -137,3 +140,4 @@ data:
         provider: vertex_ai
         provider_params:
           model: gemini-2.0-flash-lite-001
+{{- end }}

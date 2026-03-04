@@ -8,8 +8,16 @@ metadata:
     "helm.sh/hook": test
 spec:
   containers:
-    - name: wget
+    - name: health-check
       image: busybox
-      command: ['wget']
-      args: ['{{ include "citadel.fullname" . }}:{{ .Values.service.port }}/health']
+      command: ['sh', '-c']
+      args:
+        - |
+          echo "Testing /health endpoint..."
+          wget -qO- {{ include "citadel.fullname" . }}:{{ .Values.service.port }}/health || exit 1
+          echo ""
+          echo "Testing /health/ready endpoint (verifies DB connectivity)..."
+          wget -qO- {{ include "citadel.fullname" . }}:{{ .Values.service.port }}/health/ready || exit 1
+          echo ""
+          echo "All health checks passed."
   restartPolicy: Never

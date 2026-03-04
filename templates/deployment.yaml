@@ -36,6 +36,9 @@ spec:
         - name: models-config
           configMap:
             name: {{ .Release.Name }}-models
+        {{- with .Values.extraVolumes }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
       {{- if .Values.postgresql.enabled }}
       initContainers:
         - name: wait-for-db
@@ -79,6 +82,9 @@ spec:
           env:
             - name: PYTHONPATH
               value: /app/src
+            {{- with .Values.extraEnv }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
           envFrom:
             - configMapRef:
                 name: {{ .Release.Name }}-env
@@ -110,6 +116,9 @@ spec:
             - name: models-config
               mountPath: /app/config/models.yaml
               subPath: models.yaml
+            {{- with .Values.extraVolumeMounts }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

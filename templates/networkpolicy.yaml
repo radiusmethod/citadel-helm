@@ -1,0 +1,42 @@
+{{- if .Values.networkPolicy.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ include "citadel.fullname" . }}
+  labels:
+    {{- include "citadel.labels" . | nindent 4 }}
+spec:
+  podSelector:
+    matchLabels:
+      {{- include "citadel.selectorLabels" . | nindent 6 }}
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    # Allow inbound traffic to the HTTP port
+    - ports:
+        - port: 8000
+          protocol: TCP
+  egress:
+    # Allow DNS resolution
+    - ports:
+        - port: 53
+          protocol: UDP
+        - port: 53
+          protocol: TCP
+    # Allow PostgreSQL
+    - ports:
+        - port: 5432
+          protocol: TCP
+    # Allow Redis
+    - ports:
+        - port: 6379
+          protocol: TCP
+    # Allow HTTPS to external LLM APIs
+    - ports:
+        - port: 443
+          protocol: TCP
+    {{- with .Values.networkPolicy.additionalEgressRules }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+{{- end }}

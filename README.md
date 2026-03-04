@@ -11,8 +11,12 @@ helm repo add bitnami https://charts.bitnami.com/bitnami
 
 helm install citadel oci://ghcr.io/radiusmethod/citadel-helm/citadel \
   --set citadel.secretKey="$(openssl rand -hex 32)" \
+  --set citadel.environment=development \
+  --set citadel.devLoginEnabled=true \
   --set providers.openrouter.apiKey="sk-or-xxx"
 ```
+
+> **Note**: The flags above enable evaluation mode (development environment with dev login). See [Evaluation Mode](#evaluation-mode) for details.
 
 Port-forward and open the UI:
 
@@ -21,31 +25,40 @@ kubectl port-forward svc/citadel 8000:8000
 open http://localhost:8000/ui
 ```
 
-Dev login is enabled by default — click **Dev Login** to get started immediately.
+Click **Dev Login** to get started immediately — no OIDC setup required.
 
 ## Prerequisites
 
 - Kubernetes 1.23+
 - Helm 3.10+
 
+## Documentation
+
+- **[Getting Started Guide](docs/GETTING_STARTED.md)** — End-to-end deployment walkthrough
+- **[Configuration Reference](docs/CONFIGURATION.md)** — Complete values.yaml parameter reference
+- **[Architecture Overview](docs/ARCHITECTURE_OVERVIEW.md)** — System design for operators
+
 ## Installation
 
-### Minimal (evaluation)
+### Evaluation Mode
+
+For trying out Citadel before production deployment. Enables the dev login UI so you can create users and API keys without configuring OIDC.
 
 ```bash
 helm install citadel oci://ghcr.io/radiusmethod/citadel-helm/citadel \
   --set citadel.secretKey="change-me" \
+  --set citadel.environment=development \
+  --set citadel.devLoginEnabled=true \
   --set providers.openrouter.apiKey="sk-or-xxx"
 ```
 
-This deploys Citadel with the bundled PostgreSQL and dev login enabled.
+This deploys Citadel with the bundled PostgreSQL, development mode, and dev login enabled.
 
 ### Production (external database)
 
 ```bash
 helm install citadel oci://ghcr.io/radiusmethod/citadel-helm/citadel \
   --set citadel.secretKey="$(openssl rand -hex 32)" \
-  --set citadel.devLoginEnabled=false \
   --set citadel.okta.enabled=true \
   --set citadel.okta.domain="company.okta.com" \
   --set citadel.okta.clientId="0oaXXX" \
@@ -73,7 +86,6 @@ addons:
             - "citadel.bigbang.dev"
       citadel:
         secretKey: "change-me"
-        devLoginEnabled: false
       providers:
         openrouter:
           apiKey: "sk-or-xxx"
@@ -94,11 +106,11 @@ Required keys in your secret: `DATABASE_URL`, `SECRET_KEY`. Optional: `OPENROUTE
 
 | Parameter | Description | Default |
 |-----------|-------------|---------|
-| `image.repository` | Container image | `ghcr.io/radiusmethod/citadel` |
+| `image.repository` | Container image | `ghcr.io/radiusmethod/citadel-helm/citadel` |
 | `image.tag` | Image tag (defaults to appVersion) | `""` |
 | `citadel.secretKey` | Session signing key (**required**) | `""` |
-| `citadel.devLoginEnabled` | Enable dev login bypass | `true` |
 | `citadel.environment` | `development`, `staging`, or `production` | `production` |
+| `citadel.devLoginEnabled` | Enable dev login bypass | `false` |
 | `citadel.logLevel` | Log level | `INFO` |
 | `citadel.autoProvisionUsers` | Auto-create users from headers | `true` |
 | `citadel.guardrails.enabled` | Enable guardrails | `true` |
@@ -110,12 +122,15 @@ Required keys in your secret: `DATABASE_URL`, `SECRET_KEY`. Optional: `OPENROUTE
 | `providers.vertexai.projectId` | GCP project ID | `""` |
 | `providers.bedrock.enabled` | Enable AWS Bedrock | `false` |
 | `postgresql.enabled` | Deploy bundled PostgreSQL | `true` |
+| `postgresql.auth.password` | PostgreSQL password | `"citadel"` |
 | `externalDatabase.url` | External PostgreSQL URL | `""` |
 | `redis.enabled` | Deploy bundled Redis | `false` |
 | `istio.enabled` | Enable Istio VirtualService | `false` |
 | `ingress.enabled` | Enable Kubernetes Ingress | `false` |
 | `autoscaling.enabled` | Enable HPA | `false` |
 | `existingSecret` | Use external Secret | `""` |
+
+For the complete configuration reference, see [docs/CONFIGURATION.md](docs/CONFIGURATION.md).
 
 ## Client Configuration
 
@@ -146,7 +161,9 @@ curl http://<citadel-host>:8000/v1/chat/completions \
 
 ## Database Migrations
 
-Migrations run automatically as a Kubernetes init container before the main application starts. The migration runner is idempotent and tracks state in a `schema_migrations` table.
+Migrations run automatically inside the application on startup via the app's lifespan handler. The init container only waits for database connectivity before the main container starts — it does not run migrations.
+
+The migration runner is idempotent and tracks state in a `schema_migrations` table.
 
 ## Uninstall
 
@@ -159,3 +176,7 @@ Note: The bundled PostgreSQL PVC is **not** deleted automatically. To fully clea
 ```bash
 kubectl delete pvc data-citadel-postgresql-0
 ```
+
+## License
+
+Apache License 2.0 — see [LICENSE](LICENSE) for details.
