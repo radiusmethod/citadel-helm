@@ -29,9 +29,21 @@ Dev login is ENABLED. Click "Dev Login" on the UI to get started.
 Disable for production: --set citadel.devLoginEnabled=false
 {{- end }}
 
+Next steps — create your first API key:
+  1. Open the UI and navigate to API Keys
+  2. Click "Create Key" and copy the generated key (starts with sk-citadel-)
+  3. Configure your client:
+
 Configure Claude Code to use Citadel:
   claude config set --global apiBaseUrl http://localhost:8000/v1
 
 Configure OpenAI-compatible clients:
   export OPENAI_API_BASE=http://localhost:8000/v1
   export OPENAI_API_KEY=<your-citadel-api-key>
+
+{{- if .Values.postgresql.enabled }}
+
+NOTE: The bundled PostgreSQL uses a PersistentVolumeClaim that is NOT deleted
+on helm uninstall. To fully clean up after uninstalling:
+  kubectl delete pvc data-{{ .Release.Name }}-postgresql-0
+{{- end }}

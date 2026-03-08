@@ -10,12 +10,6 @@ This guide walks you through deploying Citadel AI Gateway on Kubernetes and conf
 
 ## Step 1: Install the Chart
 
-### Add the Bitnami dependency repo
-
-```bash
-helm repo add bitnami https://charts.bitnami.com/bitnami
-```
-
 ### Install in evaluation mode
 
 Evaluation mode enables dev login so you can explore the UI, create users, and generate API keys without configuring OIDC.
@@ -55,7 +49,7 @@ kubectl port-forward svc/citadel 8000:8000 &
 
 # Liveness check
 curl -s http://localhost:8000/health | jq .
-# Expected: {"status": "healthy", "version": "0.1.0"}
+# Expected: {"status":"ok","version":"0.2.0"}
 
 # Readiness check (verifies database connectivity)
 curl -s http://localhost:8000/health/ready | jq .
@@ -252,6 +246,7 @@ Before deploying to production, review this checklist:
 ### Security
 
 - [ ] **Set a strong `secretKey`**: `openssl rand -hex 32`
+- [ ] **Set `uiSessionSecret`** for production: `openssl rand -hex 32`
 - [ ] **Disable dev login**: `citadel.devLoginEnabled: false` (default)
 - [ ] **Set environment to production**: `citadel.environment: production` (default)
 - [ ] **Configure OIDC** (Okta) for user authentication
@@ -346,7 +341,7 @@ The container image may not be accessible:
 kubectl describe pod -l app.kubernetes.io/name=citadel
 ```
 
-- Verify image exists: `docker pull ghcr.io/radiusmethod/citadel:0.1.0`
+- Verify image exists: `docker pull ghcr.io/radiusmethod/citadel:0.2.0`
 - For private registries, set `imagePullSecrets`
 
 ### Database connection failures
@@ -380,5 +375,5 @@ This means the database is not connected. Check:
 
 ```bash
 # PostgreSQL connectivity
-kubectl exec -it citadel-XXXXX -- python -c "import asyncio, asyncpg, os; asyncio.run(asyncpg.connect(os.environ['DATABASE_URL']))"
+kubectl exec -it citadel-XXXXX -- curl -s http://localhost:8000/health/ready
 ```

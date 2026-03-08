@@ -42,33 +42,22 @@ spec:
       {{- if .Values.postgresql.enabled }}
       initContainers:
         - name: wait-for-db
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          image: busybox:1.37
           command:
-            - python
+            - sh
             - -c
             - |
-              import asyncio, asyncpg, os, sys, time
-              async def wait():
-                  url = os.environ["DATABASE_URL"]
-                  for i in range(30):
-                      try:
-                          conn = await asyncpg.connect(url)
-                          await conn.close()
-                          print("Database is ready")
-                          return
-                      except Exception as e:
-                          print(f"Waiting for database... ({e})")
-                          time.sleep(2)
-                  print("Database not ready after 60s")
-                  sys.exit(1)
-              asyncio.run(wait())
-          env:
-            - name: DATABASE_URL
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "citadel.secretName" . }}
-                  key: DATABASE_URL
+              echo "Waiting for {{ .Release.Name }}-postgresql:5432..."
+              for i in $(seq 1 30); do
+                if nc -z {{ .Release.Name }}-postgresql 5432; then
+                  echo "Database is ready"
+                  exit 0
+                fi
+                echo "Attempt $i/30 — waiting 2s..."
+                sleep 2
+              done
+              echo "Database not ready after 60s"
+              exit 1
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
       {{- end }}
@@ -78,10 +67,7 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          command: ["uvicorn", "citadel.main:app", "--host", "0.0.0.0", "--port", "8000"]
           env:
-            - name: PYTHONPATH
-              value: /app/src
             {{- with .Values.extraEnv }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
