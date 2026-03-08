@@ -19,15 +19,16 @@ citadel:
   environment: production
   logLevel: INFO
   secretKey: ""
+  uiSessionSecret: ""
   apiKeyPrefix: "sk-citadel"
   autoProvisionUsers: true
   devLoginEnabled: false
   guardrails:
     enabled: true
-    openaiModeration: false
+    openaiModeration: true
     piiFilter: false
   passthrough:
-    enabled: false
+    enabled: true
   plugins:
     enabled: true
   # OIDC / Okta (optional)

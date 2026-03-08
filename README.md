@@ -112,7 +112,7 @@ Required keys in your secret: `DATABASE_URL`, `SECRET_KEY`. Optional: `OPENROUTE
 | `citadel.logLevel` | Log level | `INFO` |
 | `citadel.autoProvisionUsers` | Auto-create users from headers | `true` |
 | `citadel.guardrails.enabled` | Enable guardrails | `true` |
-| `citadel.passthrough.enabled` | Enable API key passthrough | `false` |
+| `citadel.passthrough.enabled` | Enable API key passthrough | `true` |
 | `citadel.plugins.enabled` | Enable plugin system | `true` |
 | `citadel.okta.enabled` | Enable Okta OIDC | `false` |
 | `providers.openrouter.apiKey` | OpenRouter API key | `""` |

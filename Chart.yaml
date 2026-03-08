@@ -4,10 +4,10 @@ description: Helm chart for Citadel AI Gateway. Big Bang ready.
 type: application
 
 # Chart version — increment on each release
-version: 0.1.0
+version: 0.2.0
 
 # Application version deployed by this chart
-appVersion: "0.1.0"
+appVersion: "0.2.0"
 
 dependencies:
   - name: postgresql
