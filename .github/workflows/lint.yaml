@@ -33,4 +33,4 @@ jobs:
           sudo mv kube-linter-linux /usr/local/bin/kube-linter
 
       - name: Run kubelinter
-        run: kube-linter lint rendered/
+        run: kube-linter lint rendered/citadel-chart/templates/

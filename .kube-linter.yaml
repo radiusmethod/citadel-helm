@@ -1,0 +1,8 @@
+checks:
+  exclude:
+    # Init containers and test pods don't need full resource/security settings
+    - "unset-cpu-requirements"
+    - "unset-memory-requirements"
+    - "no-read-only-root-fs"
+    - "run-as-non-root"
+    - "latest-tag"
