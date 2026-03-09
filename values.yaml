@@ -48,8 +48,8 @@ rateLimiting:
 
 # -- Request/response body logging (increases storage usage)
 logging:
-  requestBody: false
-  responseBody: false
+  requestBody: true
+  responseBody: true
 
 # -- SocketZero JWT authentication (keyless)
 socketzero:

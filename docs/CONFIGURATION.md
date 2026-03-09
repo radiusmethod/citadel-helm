@@ -31,14 +31,14 @@ Complete reference for all `values.yaml` parameters in the Citadel Helm chart.
 | Parameter | Description | Default | Env Var |
 |-----------|-------------|---------|---------|
 | `citadel.guardrails.enabled` | Enable the guardrails system | `true` | `GUARDRAILS_ENABLED` |
-| `citadel.guardrails.openaiModeration` | Enable OpenAI moderation API guardrail | `false` | `GUARDRAIL_OPENAI_MODERATION` |
+| `citadel.guardrails.openaiModeration` | Enable OpenAI moderation API guardrail | `true` | `GUARDRAIL_OPENAI_MODERATION` |
 | `citadel.guardrails.piiFilter` | Enable PII detection and filtering | `false` | `GUARDRAIL_PII_FILTER` |
 
 ### Passthrough
 
 | Parameter | Description | Default | Env Var |
 |-----------|-------------|---------|---------|
-| `citadel.passthrough.enabled` | Enable passthrough mode for client-provided auth | `false` | `PASSTHROUGH_ENABLED` |
+| `citadel.passthrough.enabled` | Enable passthrough mode for client-provided auth | `true` | `PASSTHROUGH_ENABLED` |
 
 When passthrough is enabled, clients can send their own LLM provider credentials via the `Authorization` header while using a Citadel key in `x-citadel-api-key` for gateway authentication. Useful for Claude Code Max users.
 
@@ -73,8 +73,8 @@ Rate limits can also be set per-key when creating API keys via the management AP
 
 | Parameter | Description | Default | Env Var |
 |-----------|-------------|---------|---------|
-| `logging.requestBody` | Store full request bodies in logs | `false` | `LOG_REQUEST_BODY` |
-| `logging.responseBody` | Store full response bodies in logs | `false` | `LOG_RESPONSE_BODY` |
+| `logging.requestBody` | Store full request bodies in logs | `true` | `LOG_REQUEST_BODY` |
+| `logging.responseBody` | Store full response bodies in logs | `true` | `LOG_RESPONSE_BODY` |
 
 Enabling body logging significantly increases storage usage but provides a full audit trail.
 
