@@ -1,2 +1,4 @@
 # Downloaded dependency tarballs
 charts/*.tgz
+.playwright-mcp/
+.claude/settings.local.json

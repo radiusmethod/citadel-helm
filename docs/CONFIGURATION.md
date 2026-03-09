@@ -73,8 +73,8 @@ Rate limits can also be set per-key when creating API keys via the management AP
 
 | Parameter | Description | Default | Env Var |
 |-----------|-------------|---------|---------|
-| `logging.requestBody` | Store full request bodies in logs | `false` | `LOG_REQUEST_BODY` |
-| `logging.responseBody` | Store full response bodies in logs | `false` | `LOG_RESPONSE_BODY` |
+| `logging.requestBody` | Store full request bodies in logs | `true` | `LOG_REQUEST_BODY` |
+| `logging.responseBody` | Store full response bodies in logs | `true` | `LOG_RESPONSE_BODY` |
 
 Enabling body logging significantly increases storage usage but provides a full audit trail.
 
