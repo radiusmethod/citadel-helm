@@ -1,0 +1,51 @@
+name: Bug Report
+description: Report a bug with the Citadel Helm chart
+labels: ["bug"]
+body:
+  - type: input
+    id: chart-version
+    attributes:
+      label: Chart Version
+      description: Output of `helm list` or the version you installed
+      placeholder: "0.2.1"
+    validations:
+      required: true
+
+  - type: input
+    id: k8s-version
+    attributes:
+      label: Kubernetes Version
+      description: Output of `kubectl version --short`
+      placeholder: "1.28.0"
+    validations:
+      required: true
+
+  - type: textarea
+    id: values-overrides
+    attributes:
+      label: Values Overrides
+      description: Relevant values.yaml overrides (redact any secrets)
+      render: yaml
+
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected Behavior
+      description: What you expected to happen
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual-behavior
+    attributes:
+      label: Actual Behavior
+      description: What actually happened
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs / Error Output
+      description: Relevant logs, error messages, or kubectl output
+      render: shell

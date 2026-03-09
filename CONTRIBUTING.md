@@ -57,7 +57,3 @@ Open a [GitHub issue](https://github.com/radiusmethod/citadel-helm/issues/new) w
 - Follow existing patterns in templates and values
 - Add comments for non-obvious template logic
 - Update `CHANGELOG.md` under an `[Unreleased]` section
-
-## Code of Conduct
-
-Be respectful and constructive. We're all working toward the same goal.

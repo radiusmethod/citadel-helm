@@ -177,4 +177,4 @@ kubectl delete pvc data-citadel-postgresql-0
 
 ## License
 
-Apache License 2.0 — see [LICENSE](LICENSE) for details.
+MIT License — see [LICENSE](LICENSE) for details.
