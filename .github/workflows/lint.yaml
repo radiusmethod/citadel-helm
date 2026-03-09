@@ -22,3 +22,15 @@ jobs:
 
       - name: Helm template
         run: helm template citadel . --set citadel.secretKey=test
+
+      - name: Render templates for kubelinter
+        run: helm template citadel . --set citadel.secretKey=test --output-dir rendered
+
+      - name: Install kubelinter
+        run: |
+          curl -sSLO "https://github.com/stackrox/kube-linter/releases/latest/download/kube-linter-linux"
+          chmod +x kube-linter-linux
+          sudo mv kube-linter-linux /usr/local/bin/kube-linter
+
+      - name: Run kubelinter
+        run: kube-linter lint rendered/
